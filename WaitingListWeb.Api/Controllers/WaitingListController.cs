@@ -24,11 +24,11 @@ namespace WaitingListWeb.Api.Controllers
             return Ok(new { id });
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllEntries()
+        public async Task<IActionResult> GetPagedEntries([FromQuery] int page = 1, [FromQuery] int size = 10)
         {
             try
             {
-                var entries = await _service.GetAllEntriesAsync();
+                var entries = await _service.GetAllEntriesAsync(page, size);
                 return Ok(entries);
             }
             catch (Exception ex)

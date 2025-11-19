@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using WaitingListWeb.Application.DTOs;
 using WaitingListWeb.Application.Interface;
 using WaitingListWeb.Domain.Abstraction;
@@ -82,33 +83,47 @@ namespace WaitingListWeb.Infrastructure.Implementation
             );
         }
 
-        public async Task<ApiResponse<IList<WaitingEntryDTO>>> GetAllEntriesAsync(CancellationToken ct = default)
+        public async Task<ApiResponse<BasePaginatedList<WaitingEntryDTO>>> GetAllEntriesAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken ct = default)
         {
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
             try
             {
-                _logger.LogInformation("Retrieving all waiting list entries.");
+                _logger.LogInformation("Retrieving waiting list entries page {Page} size {Size}.",
+                    pageNumber, pageSize);
 
                 var repo = _unitOfWork.GetRepository<WaitingListEntry>();
-                var entries = await repo.GetAllAsync();
+                var entries = await repo.GetAllAsync(); // nếu sau này có IQueryable thì tối ưu sau
 
-                var dtoList = entries.Adapt<IList<WaitingEntryDTO>>();
+                var ordered = entries.OrderByDescending(x => x.CreatedAtUtc).ToList();
+                var count = ordered.Count;
 
-                return ApiResponse<IList<WaitingEntryDTO>>.Success(
-                    data: dtoList,
-                    message: "Retrieved all waiting list entries successfully."
-                );
+                var pageItems = ordered
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Adapt<IReadOnlyCollection<WaitingEntryDTO>>();
+
+                var pagedResult = new BasePaginatedList<WaitingEntryDTO>(
+                    pageItems, count, pageNumber, pageSize);
+
+                return ApiResponse<BasePaginatedList<WaitingEntryDTO>>.Success(
+                    pagedResult,
+                    "Retrieved paged waiting list entries successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving waiting list entries.");
-
-                return ApiResponse<IList<WaitingEntryDTO>>.Fail(
-                    status: System.Net.HttpStatusCode.InternalServerError,
-                    code: "SERVER_ERROR",
-                    message: "An error occurred while retrieving the data."
-                );
+                _logger.LogError(ex, "Error retrieving paged waiting list entries.");
+                return ApiResponse<BasePaginatedList<WaitingEntryDTO>>.Fail(
+                    HttpStatusCode.InternalServerError,
+                    "INTERNAL_ERROR",
+                    "An error occurred while retrieving paged waiting list entries.");
             }
         }
+
 
     }
 }
