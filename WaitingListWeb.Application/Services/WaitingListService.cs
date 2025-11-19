@@ -1,9 +1,10 @@
 ﻿using Mapster;
+using Microsoft.Extensions.Logging;
 using WaitingListWeb.Application.DTOs;
 using WaitingListWeb.Application.Interface;
 using WaitingListWeb.Domain.Abstraction;
 using WaitingListWeb.Domain.Entities;
-using Microsoft.Extensions.Logging;
+using WaitingListWeb.Shared.ApiResponse;
 
 namespace WaitingListWeb.Infrastructure.Implementation
 {
@@ -23,21 +24,25 @@ namespace WaitingListWeb.Infrastructure.Implementation
             _logger = logger;
         }
 
-        public async Task<Guid> CreateAndNotifyAsync(WaitingEntryDTO dto, CancellationToken ct = default)
+        public async Task<ApiResponse<object>> CreateAndNotifyAsync(WaitingEntryDTO dto, CancellationToken ct = default)
         {
             var repo = _unitOfWork.GetRepository<WaitingListEntry>();
-
             string email = dto.Email.Trim().ToLowerInvariant();
 
-            // 1) check existing
+            // 1) Check existing
             var existing = await repo.FindByConditionAsync(e => e.Email == email, ct);
             if (existing != null)
             {
                 _logger.LogInformation("Email already exists: {Email}", email);
-                return existing.Id;
+
+                return ApiResponse<object>.Success(
+                    data: null,
+                    message: "This email is already registered."
+                );
             }
 
-            var entry = new WaitingListEntry(dto.Email.Trim().ToLowerInvariant())
+            // 2) Create entry
+            var entry = new WaitingListEntry(email)
             {
                 FirstName = string.IsNullOrWhiteSpace(dto.FirstName) ? null : dto.FirstName.Trim(),
                 LastName = string.IsNullOrWhiteSpace(dto.LastName) ? null : dto.LastName.Trim(),
@@ -45,14 +50,12 @@ namespace WaitingListWeb.Infrastructure.Implementation
                 WishMessage = string.IsNullOrWhiteSpace(dto.WishMessage) ? null : dto.WishMessage.Trim()
             };
 
-
-            // 3) Insert  Save
             await repo.InsertAsync(entry, ct);
             await _unitOfWork.SaveChangeAsync();
 
-            // 4) Send email
+            // 3) Send email
             var name = $"{entry.FirstName} {entry.LastName}".Trim();
-            if (string.IsNullOrEmpty(name)) name = "Bạn";
+            if (string.IsNullOrEmpty(name)) name = "Friend";
 
             var templateData = new Dictionary<string, string>
             {
@@ -71,7 +74,13 @@ namespace WaitingListWeb.Infrastructure.Implementation
             if (!emailOK)
                 _logger.LogWarning("Failed to send welcome email to {Email}", entry.Email);
 
-            return entry.Id;
+            return ApiResponse<object>.Success(
+                data: null,
+                message: emailOK
+                    ? "Successfully joined the waiting list."
+                    : "Joined the waiting list, but failed to send confirmation email."
+            );
         }
+
     }
 }
