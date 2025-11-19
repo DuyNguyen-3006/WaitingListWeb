@@ -11,5 +11,6 @@ namespace WaitingListWeb.Application.Interface
     public interface IWaitingListService
     {
         Task<ApiResponse<object>> CreateAndNotifyAsync(WaitingEntryDTO dto, CancellationToken ct = default);
+        Task<ApiResponse<IList<WaitingEntryDTO>>> GetAllEntriesAsync(CancellationToken ct = default);
     }
 }

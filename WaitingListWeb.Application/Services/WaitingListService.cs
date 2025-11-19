@@ -82,5 +82,33 @@ namespace WaitingListWeb.Infrastructure.Implementation
             );
         }
 
+        public async Task<ApiResponse<IList<WaitingEntryDTO>>> GetAllEntriesAsync(CancellationToken ct = default)
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving all waiting list entries.");
+
+                var repo = _unitOfWork.GetRepository<WaitingListEntry>();
+                var entries = await repo.GetAllAsync();
+
+                var dtoList = entries.Adapt<IList<WaitingEntryDTO>>();
+
+                return ApiResponse<IList<WaitingEntryDTO>>.Success(
+                    data: dtoList,
+                    message: "Retrieved all waiting list entries successfully."
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving waiting list entries.");
+
+                return ApiResponse<IList<WaitingEntryDTO>>.Fail(
+                    status: System.Net.HttpStatusCode.InternalServerError,
+                    code: "SERVER_ERROR",
+                    message: "An error occurred while retrieving the data."
+                );
+            }
+        }
+
     }
 }

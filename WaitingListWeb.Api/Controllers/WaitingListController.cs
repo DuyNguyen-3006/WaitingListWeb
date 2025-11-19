@@ -23,5 +23,18 @@ namespace WaitingListWeb.Api.Controllers
             var id = await _service.CreateAndNotifyAsync(dto);
             return Ok(new { id });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllEntries()
+        {
+            try
+            {
+                var entries = await _service.GetAllEntriesAsync();
+                return Ok(entries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the waiting list entries.");
+            }
+        }
     }
 }
