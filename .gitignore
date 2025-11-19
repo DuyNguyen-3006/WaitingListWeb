@@ -8,5 +8,5 @@ obj/
 *.pdb
 *.db
 *.git
-/MovieTheater.Infrastructure/Migrations
 .sonarqube/
+.env/

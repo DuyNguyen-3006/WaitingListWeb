@@ -9,9 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaitingListWeb.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaitingListWeb.Application", "WaitingListWeb.Application\WaitingListWeb.Application.csproj", "{448BC6F2-9713-4355-9676-474582D64C63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "..\FPT\SWD222\FiboChatPlatform\SharedLibrary\SharedLibrary.csproj", "{AFEE519C-E41D-42E9-AFF4-F2457D310A65}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaitingListWeb.Api", "WaitingListWeb.Api\WaitingListWeb.Api.csproj", "{9855DF6B-E8E2-4967-9F5D-5769910886E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.SharedLibrary", "Project.SharedLibrary\Project.SharedLibrary.csproj", "{6ADDE6C3-D5EB-E7E6-0E45-35C5E28C906E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +38,14 @@ Global
 		{448BC6F2-9713-4355-9676-474582D64C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{448BC6F2-9713-4355-9676-474582D64C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{448BC6F2-9713-4355-9676-474582D64C63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFEE519C-E41D-42E9-AFF4-F2457D310A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFEE519C-E41D-42E9-AFF4-F2457D310A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFEE519C-E41D-42E9-AFF4-F2457D310A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFEE519C-E41D-42E9-AFF4-F2457D310A65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9855DF6B-E8E2-4967-9F5D-5769910886E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9855DF6B-E8E2-4967-9F5D-5769910886E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9855DF6B-E8E2-4967-9F5D-5769910886E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9855DF6B-E8E2-4967-9F5D-5769910886E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ADDE6C3-D5EB-E7E6-0E45-35C5E28C906E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADDE6C3-D5EB-E7E6-0E45-35C5E28C906E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADDE6C3-D5EB-E7E6-0E45-35C5E28C906E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADDE6C3-D5EB-E7E6-0E45-35C5E28C906E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

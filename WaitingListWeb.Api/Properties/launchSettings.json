@@ -16,7 +16,9 @@
       "launchBrowser": false,
       "applicationUrl": "https://localhost:7226;http://localhost:5186",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Postmark__ServerToken": "f9c87775-22d3-4a5e-8bd1-bbd9d36eb4d6",
+        "Postmark__FromEmail": "cineversecinematic.cinema@gmail.com"
       }
     }
   }
