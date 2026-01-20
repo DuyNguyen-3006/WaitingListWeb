@@ -24,8 +24,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Health checks
-builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("Postgres"), name: "postgres", tags: new[] { "ready" });
+var cs = builder.Configuration.GetConnectionString("Postgres");
+Console.WriteLine(">>> CS(Postgres) = " + cs);
+Console.WriteLine(">>> RunMigrationsOnStartup = " + builder.Configuration.GetValue<bool>("AppSettings:RunMigrationsOnStartup"));
+
+
 
 // CORS
 builder.Services.AddCors(options =>
